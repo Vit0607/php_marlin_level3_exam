@@ -1,13 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-</head>
-<body>
-
+<!DOCTYPE html>
+<html>
 <?php
-
+if( !session_id() ) @session_start();
 require '../vendor/autoload.php';
 
 use Aura\SqlQuery\QueryFactory;
@@ -38,75 +32,9 @@ $containerBuilder->addDefinitions([
     }
 ]);
 $container = $containerBuilder->build();
-
-$faker = Factory::create();
-
-//a PDO connection
-$pdo = new PDO('mysql:host=localhost;dbname=example01', 'root', '');
-$queryFactory = new QueryFactory('mysql');
-
-//$insert = $queryFactory->newInsert();
-//
-//// insert into this table
-//$insert->into('posts');
-//for($i = 0; $i < 30; $i++) {
-//    $insert->cols([
-//          'title' => $faker->words(3, true),
-//        'content' => $faker->text
-//    ]);
-//    $insert->addRow();
-//}
-//// execute a bulk insert of all rows
-//$sth = $pdo->prepare($insert->getStatement());
-//$sth->execute($insert->getBindValues());
-
-$select = $queryFactory->newSelect();
-$select
-    ->cols(['*'])
-    ->from('posts');
-
-// prepare the statement
-$sth = $pdo->prepare($select->getStatement());
-
-// bind the values and execute
-$sth->execute($select->getBindValues());
-$totalItems = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-$select = $queryFactory->newSelect();
-$select
-    ->cols(['*'])
-    ->from('posts')
-    ->setPaging(3)
-    ->page($_GET['page'] ?? 1);
-
-// prepare the statement
-$sth = $pdo->prepare($select->getStatement());
-
-// bind the values and execute
-$sth->execute($select->getBindValues());
-
-//get the results back as an associative array
-$items = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-$itemsPerPage = 3;
-$currentPage = $_GET['page'] ?? 1;
-$urlPattern = '?page=(:num)';
-
-$paginator = new Paginator(count($totalItems), $itemsPerPage, $currentPage, $urlPattern);
-
-foreach ($items as $item) {
-    echo $item['id'] . PHP_EOL . $item['title'] . '<br>';
-}
 ?>
 
-<?= $paginator; ?>
 
-
-echo 123;
-
-
-</body>
-</html>
 
 <?php
 
@@ -115,6 +43,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
     $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
     $r->addRoute('GET', '/login', ['App\controllers\HomeController', 'login']);
+    $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
+    $r->addRoute(['GET', 'POST'], '/register', ['App\controllers\HomeController', 'register']);
 });
 
 // Fetch method and URI from somewhere
@@ -143,6 +73,10 @@ switch ($routeInfo[0]) {
         // ... call $handler with $vars
         break;
 }
+
+?>
+
+</html>
 
 
 

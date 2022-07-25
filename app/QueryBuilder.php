@@ -37,6 +37,30 @@ class QueryBuilder
         return $result;
     }
 
+   public function  getAllTablesInfo($table1, $table2) {
+       $select = $this->queryFactory->newSelect();
+
+       $select->cols(['*'])
+           ->from($table1);
+
+       $select->join(
+           'INNER',             // the join-type
+           $table2,        // join to this table ...
+           "{$table1}.id = {$table2}.user_id" // ... ON these conditions
+       );
+
+// prepare the statement
+       $sth = $this->pdo->prepare($select->getStatement());
+
+// bind the values and execute
+       $sth->execute($select->getBindValues());
+
+// get the results back as an associative array
+       $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+       return $result;
+   }
+
     public function getOne($table, $id)
     {
         $select = $this->queryFactory->newSelect();

@@ -12,29 +12,27 @@
 <!--        <div class="alert alert-success">-->
 <!--            Регистрация успешна-->
 <!--        </div>-->
-        <?php if ($_SESSION['flash_messages']['reg_success']): ?>
-            <?php echo flash()->display('success'); ?>
-        <?php endif; ?>
-        <form action="">
+        <?php echo flash()->display(); ?>
+        <form method="post">
             <div class="form-group">
                 <label class="form-label" for="username">Email</label>
-                <input type="email" id="username" class="form-control" placeholder="Эл. адрес" value="">
+                <input type="email" id="username" name="email" class="form-control" placeholder="Эл. адрес" value="">
             </div>
             <div class="form-group">
                 <label class="form-label" for="password">Пароль</label>
-                <input type="password" id="password" class="form-control" placeholder="" >
+                <input type="password" id="password" name="password" class="form-control" placeholder="">
             </div>
-            <div class="form-group text-left">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="rememberme">
-                    <label class="custom-control-label" for="rememberme">Запомнить меня</label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-default float-right">Войти</button>
+<!--            <div class="form-group text-left">-->
+<!--                <div class="custom-control custom-checkbox">-->
+<!--                    <input type="checkbox" class="custom-control-input" id="rememberme">-->
+<!--                    <label class="custom-control-label" for="rememberme">Запомнить меня</label>-->
+<!--                </div>-->
+<!--            </div>-->
+            <button type="submit" name="login" class="btn btn-default float-right" value="login">Войти</button>
         </form>
     </div>
     <div class="blankpage-footer text-center">
-        Нет аккаунта? <a href="page_register.html"><strong>Зарегистрироваться</strong>
+        Нет аккаунта? <a href="/register"><strong>Зарегистрироваться</strong>
     </div>
 </div>
 <video poster="img/backgrounds/clouds.png" id="bgvid" playsinline autoplay muted loop>

@@ -28,9 +28,10 @@ $containerBuilder->addDefinitions([
     },
 
     Auth::class => function ($container) {
-        return new Delight\Auth\Auth($container->get('PDO'));
+        return new Delight\Auth\Auth($container->get('PDO'), null, null, false);
     }
 ]);
+$containerBuilder->ignorePhpDocErrors(false);
 $container = $containerBuilder->build();
 ?>
 
@@ -42,9 +43,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/home', ['App\controllers\HomeController', 'index']);
     $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
     $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
-    $r->addRoute('GET', '/login', ['App\controllers\HomeController', 'login']);
+    $r->addRoute(['GET', 'POST'], '/login', ['App\controllers\HomeController', 'login']);
     $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
     $r->addRoute(['GET', 'POST'], '/register', ['App\controllers\HomeController', 'register']);
+    $r->addRoute(['GET', 'POST'], '/users', ['App\controllers\HomeController', 'users']);
 });
 
 // Fetch method and URI from somewhere

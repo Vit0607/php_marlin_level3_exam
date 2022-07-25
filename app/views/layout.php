@@ -1,3 +1,12 @@
+<?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+error_reporting(E_ALL);
+
+//echo $bbb;
+?>
 <head>
     <meta charset="utf-8">
     <title><?= $this->e($title) ?></title>
@@ -11,50 +20,77 @@
     <!-- base css -->
     <link id="vendorsbundle" type="text/css" rel="stylesheet" media="screen, print" href="/css/vendors.bundle.css">
     <link id="appbundle" type="text/css" rel="stylesheet" media="screen, print" href="/css/app.bundle.css">
-    <!--    <link id="mytheme" rel="stylesheet" media="screen, print" href="#">-->
+    <!-- <link id="mytheme" rel="stylesheet" media="screen, print" href="#">-->
     <link id="myskin" type="text/css" rel="stylesheet" media="screen, print" href="/css/skins/skin-master.css">
     <!-- Place favicon.ico in the root directory -->
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
     <link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <link rel="stylesheet" media="screen, print" href="/css/fa-brands.css">
+    <?php if ($_SERVER['REQUEST_URI'] == '/login'): ?>
+        <link rel="stylesheet" media="screen, print" href="/css/page-login-alt.css">
+    <?php endif; ?>
+    <!-- <link rel="stylesheet" media="screen, print" href="/css/page-login-alt.css">-->
     <!-- CSS only -->
-    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">-->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">-->
 </head>
+
 <body>
 
-<nav>
-    <ul>
-        <li><a href="/home">Homepage</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/login">Логин</a></li>
-        <li><a href="/register">Регистрация</a></li>
-        <li><a href="/logout">Выход</a></li>
-    </ul>
-</nav>
+<!--<nav>-->
+<!-- <ul>-->
+<!-- <li><a href="/home">Homepage</a></li>-->
+<!-- <li><a href="/about">About</a></li>-->
+<!-- <li><a href="/login">Логин</a></li>-->
+<!-- <li><a href="/register">Регистрация</a></li>-->
+<!-- <li><a href="/logout">Выход</a></li>-->
+<!-- </ul>-->
+<!--</nav>-->
 
 <?= $this->section('content') ?>
 
 <script src="/js/vendors.bundle.js" type="text/javascript"></script>
 <script>
-    $("#js-login-btn").click(function(event)
-    {
+    $("#js-login-btn").click(function (event) {
 
-        // Fetch form to apply custom Bootstrap validation
+// Fetch form to apply custom Bootstrap validation
         var form = $("#js-login")
 
-        if (form[0].checkValidity() === false)
-        {
+        if (form[0].checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
         }
 
         form.addClass('was-validated');
-        // Perform ajax submit here...
+// Perform ajax submit here...
+    });
+
+</script>
+<script src="js/app.bundle.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+        $('input[type=radio][name=contactview]').change(function () {
+            if (this.value == 'grid') {
+                $('#js-contacts .card').removeClassPrefix('mb-').addClass('mb-g');
+                $('#js-contacts .col-xl-12').removeClassPrefix('col-xl-').addClass('col-xl-4');
+                $('#js-contacts .js-expand-btn').addClass('d-none');
+                $('#js-contacts .card-body + .card-body').addClass('show');
+
+            } else if (this.value == 'table') {
+                $('#js-contacts .card').removeClassPrefix('mb-').addClass('mb-1');
+                $('#js-contacts .col-xl-4').removeClassPrefix('col-xl-').addClass('col-xl-12');
+                $('#js-contacts .js-expand-btn').removeClass('d-none');
+                $('#js-contacts .card-body + .card-body').removeClass('show');
+            }
+
+        });
+
+//initialize filter
+        initApp.listFilter($('#js-contacts'), $('#js-filter-contacts'));
     });
 
 </script>
 
 </body>
-
-

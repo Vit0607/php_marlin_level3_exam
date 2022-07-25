@@ -15,7 +15,7 @@
                     <span class="text-white opacity-50 ml-auto mr-2 hidden-sm-down">
                             Уже зарегистрированы?
                         </span>
-                    <a href="page_login.html" class="btn-link text-white ml-auto ml-sm-0">
+                    <a href="/login" class="btn-link text-white ml-auto ml-sm-0">
                         Войти
                     </a>
                 </div>
@@ -38,9 +38,7 @@
                         </div>
                         <div class="col-xl-6 ml-auto mr-auto">
                             <div class="card p-4 rounded-plus bg-faded">
-                                <?php if ($_SESSION['flash_messages']['reg_error']): ?>
-                                    <?php echo flash()->display('error'); ?>
-                                <?php endif; ?>
+                                    <?php echo flash()->display(); ?>
                                 <form id="js-login" novalidate="" method="post">
                                     <div class="form-group">
                                         <label class="form-label" for="emailverify">Email</label>

@@ -9,9 +9,6 @@
         </a>
     </div>
     <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
-<!--        <div class="alert alert-success">-->
-<!--            Регистрация успешна-->
-<!--        </div>-->
         <?php echo flash()->display(); ?>
         <form method="post">
             <div class="form-group">

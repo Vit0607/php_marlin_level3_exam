@@ -89,11 +89,13 @@ class QueryBuilder
             ->into($table)                   // INTO this table
             ->cols($data);
 
-        // prepare the statement
         $sth = $this->pdo->prepare($insert->getStatement());
 
-// bind the values and execute
-        $sth->execute($insert->getBindValues());
+        var_dump($_POST);
+
+//        $sth->execute($insert->getBindValues());
+
+        d($sth->execute($insert->getBindValues()));die();
     }
 
     public function update($data, $id, $table)
@@ -123,6 +125,10 @@ class QueryBuilder
         $sth = $this->pdo->prepare($delete->getStatement());
 
         $sth->execute($delete->getBindValues());
+    }
+
+    public function getLastId() {
+        $this->pdo->lastInsertId();
     }
 
 

@@ -41,12 +41,11 @@ $container = $containerBuilder->build();
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/home', ['App\controllers\HomeController', 'index']);
-    $r->addRoute('GET', '/about', ['App\controllers\HomeController', 'about']);
-    $r->addRoute('GET', '/verification', ['App\controllers\HomeController', 'email_verification']);
     $r->addRoute(['GET', 'POST'], '/login', ['App\controllers\HomeController', 'login']);
     $r->addRoute('GET', '/logout', ['App\controllers\HomeController', 'logout']);
     $r->addRoute(['GET', 'POST'], '/register', ['App\controllers\HomeController', 'register']);
     $r->addRoute(['GET', 'POST'], '/users', ['App\controllers\HomeController', 'users']);
+    $r->addRoute(['GET', 'POST'], '/create-user', ['App\controllers\HomeController', 'create_user']);
 });
 
 // Fetch method and URI from somewhere

@@ -1,9 +1,5 @@
 <?php $this->layout('layout', ['title' => 'Пользователи']) ?>
 
-<?php
-//var_dump($usersInView);
-?>
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-primary-gradient">
     <a class="navbar-brand d-flex align-items-center fw-500" href="users.html"><img alt="logo"
                                                                                     class="d-inline-block align-top mr-2"
@@ -30,9 +26,10 @@
 </nav>
 
 <main id="js-page-content" role="main" class="page-content mt-3">
-    <div class="alert alert-success">
-        Профиль успешно обновлен.
-    </div>
+<!--    <div class="alert alert-success">-->
+<!--        Профиль успешно обновлен.-->
+<!--    </div>-->
+    <?php echo flash()->display(); ?>
     <div class="subheader">
         <h1 class="subheader-title">
             <i class='subheader-icon fal fa-users'></i> Список пользователей
@@ -41,7 +38,7 @@
     <div class="row">
         <div class="col-xl-12">
             <?php if (array_search('ADMIN', $role)): ?>
-                <a class="btn btn-success" href="create_user.php">Добавить</a>
+                <a class="btn btn-success" href="/create-user">Добавить</a>
             <?php endif; ?>
 
             <div class="border-faded bg-faded p-3 mb-g d-flex mt-3">

@@ -13,8 +13,6 @@ class HomeController
     private $templates;
     private $auth;
     private $qb;
-    private $selector;
-    private $token;
 
     public function __construct(QueryBuilder $qb, Engine $engine, Auth $auth)
     {
@@ -32,38 +30,13 @@ class HomeController
         echo $this->templates->render('homepage', ['usersInView' => $users]);
     }
 
-    public function about()
-    {
-        $db = new PDO('mysql:host=localhost;dbname=php_marlin_app3;charset=utf8;', 'root', '');
-        $auth = new Auth($db);
-
-        $one = $this->qb->getOne('users', 1);
-
-//        d($one);die();
-
-        try {
-            $userId = $auth->register('rahim2@marlindev.ru', '123', 'Rahim2', function ($selector, $token) {
-                echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
-                echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                echo '  For SMS, consider using a third-party service and a compatible SDK';
-            });
-
-            echo 'We have signed up a new user with the ID ' . $userId;
-        } catch (\Delight\Auth\InvalidEmailException $e) {
-            die('Invalid email address');
-        } catch (\Delight\Auth\InvalidPasswordException $e) {
-            die('Invalid password');
-        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-            die('User already exists');
-        } catch (\Delight\Auth\TooManyRequestsException $e) {
-            die('Too many requests');
-        }
-
-//        echo $this->templates->render('about', ['name' => 'Jonathan about page']);
-    }
 
     public function register()
     {
+//        ini_set('error_reporting', E_ALL);
+//        ini_set('display_errors', 1);
+//        ini_set('display_startup_errors', 1);
+
         if (!$_POST['reg']) {
             echo 1;
 //            echo $bbb;die();
@@ -84,36 +57,13 @@ class HomeController
                 flash()->message('Too many requests', 'error');
             }
 
-            if(!empty($_SESSION['flash_messages']['error'])) {
+            if (!empty($_SESSION['flash_messages']['error'])) {
                 header('Location: /register');
             } else {
                 header('Location: /login');
             }
         }
     }
-
-//    public function email_verification()
-//    {
-//        try {
-//            $this->auth->confirmEmail($this->selector, $this->token);
-//            flash()->message('Регистрация успешна', 'success');
-//        } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-//            flash()->message('Invalid token 2', 'error');
-//        } catch (\Delight\Auth\TokenExpiredException $e) {
-//            flash()->message('Token expired', 'error');
-//        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-//            flash()->message('Email address already exists', 'error');
-//        } catch (\Delight\Auth\TooManyRequestsException $e) {
-//            flash()->message('Too many requests 2', 'error');
-//        }
-//
-//        if(!empty($_SESSION['flash_messages']['error'])) {
-//            header('Location: /register');
-//        } else {
-//            header('Location: /login');
-//        }
-//
-//    }
 
     public function login()
     {
@@ -140,7 +90,7 @@ class HomeController
                 flash()->message('Too many requests', 'error');
             }
 
-            if(!empty($_SESSION['flash_messages']['error'])) {
+            if (!empty($_SESSION['flash_messages']['error'])) {
                 header('Location: /login');
             } else {
                 header('Location: /users');
@@ -152,54 +102,65 @@ class HomeController
     {
         $this->auth->logOut();
 
-//// or
-//
-//        try {
-//            $this->auth->logOutEverywhereElse();
-//        } catch (\Delight\Auth\NotLoggedInException $e) {
-//            die('Not logged in');
-//        }
-//
-//// or
-//
-//        try {
-//            $this->auth->logOutEverywhere();
-//        } catch (\Delight\Auth\NotLoggedInException $e) {
-//            die('Not logged in');
-//        }
-
         header('Location: /login');
-
     }
 
     public function users()
     {
-
-        if($this->auth->isLoggedIn()) {
-            // d($this->auth);die();
-// d($this->auth->isLoggedIn());die();
-
-            $log = $this->auth->isLoggedIn();
-
-// $this->auth->login('123@tutu.ru', '123');
-
-// d($this->auth->getRoles());die();
-
+        if ($this->auth->isLoggedIn()) {
             $role = $this->auth->getRoles();
-//        var_dump($role);
-
-
-// $this->auth->admin()->addRoleForUserById('11', \Delight\Auth\Role::ADMIN);
-// $this->auth->admin()->addRoleForUserById('2', \Delight\Auth\Role::DIRECTOR);
-// $this->auth->admin()->addRoleForUserById('3', \Delight\Auth\Role::MANAGER);
-
-//            $users = $this->qb->getAll('users');
-            $users = $this->qb->getAllTablesInfo('users', 'information_links');
-
+            $users = $this->qb->getAllTablesInfo('users', 'info_links');
+//            unset($_SESSION['flash_messages']['success']);
             echo $this->templates->render('users', ['usersInView' => $users, 'role' => $role]);
         } else {
             header('Location: /login');
         }
-
     }
+
+    public function create_user()
+    {
+        if ($this->auth->isLoggedIn()) {
+            if (!$_POST['create_user']) {
+                echo 1;
+                echo $this->templates->render('create_user');
+            } elseif ($_POST['create_user']) {
+                echo 2;
+                try {
+                    $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username']);
+                    flash()->message('Профиль успешно обновлен.', 'success');
+                } catch (\Delight\Auth\InvalidEmailException $e) {
+                    flash()->message('Invalid email address', 'error');
+                } catch (\Delight\Auth\InvalidPasswordException $e) {
+                    flash()->message('Invalid password', 'error');
+                } catch (\Delight\Auth\UserAlreadyExistsException $e) {
+                    flash()->message('User already exists', 'error');
+                } catch (\Delight\Auth\TooManyRequestsException $e) {
+                    flash()->message('Too many requests', 'error');
+                }
+
+                if (!empty($_SESSION['flash_messages']['error'])) {
+                    header('Location: /create-user');
+                } else {
+                    $data = [
+                        'user_id' => $userId,
+                        'job_title' => $_POST['job_title'],
+                        'phone' => $_POST['phone'],
+                        'address' => $_POST['address'],
+                        'online_status' => $_POST['online_status'],
+                        'telegram' => 'https://telegram.org/',
+                        'instagram' => 'https://instagram.com/',
+                        'vk' => 'https://vk.com/id399462970',
+                    ];
+
+                    $this->qb->insert($data, 'info');
+
+
+                    header('Location: /users');
+                }
+            }
+        } else {
+            header('Location: /login');
+        }
+    }
+
 }

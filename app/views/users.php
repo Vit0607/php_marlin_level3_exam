@@ -79,7 +79,8 @@
                                     </span>
                             <div class="info-card-text flex-1">
                                 <a href="javascript:void(0);" class="fs-xl text-truncate text-truncate-lg text-info"
-                                   data-toggle="dropdown" aria-expanded="false">
+                                  <?php if (array_search('ADMIN', $role) || $user['email'] == $_SESSION['auth_email']): ?> data-toggle="dropdown" <?php endif; ?>
+                                   aria-expanded="false">
                                     <?php echo $user['username']; ?>
 
                                     <?php if (array_search('ADMIN', $role)): ?>
@@ -103,10 +104,9 @@
                                     <a class="dropdown-item" href="/status?id=<?php echo $user['id'] ?>">
                                         <i class="fa fa-sun"></i>
                                         Установить статус</a>
-                                    <a class="dropdown-item" href="/media?id=<?php echo $user['id'] ?>">
-                                        <i class="fa fa-camera"></i>
-                                        Загрузить аватар
-                                    </a>
+                                    <a class="dropdown-item" href="/avatar?id=<?php echo $user['id'] ?>">
+                                        <i class="fa fa-sun"></i>
+                                        Загрузить аватар</a>
                                     <a class="dropdown-item" href="/delete?id=<?php echo $user['id'] ?>"
                                        onclick="return confirm('are you sure?');">
                                         <i class="fa fa-window-close"></i>

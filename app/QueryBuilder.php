@@ -162,6 +162,20 @@ class QueryBuilder
         $sth->execute($delete->getBindValues());
     }
 
+    public function deleteByUserId($table, $user_id)
+    {
+        $delete = $this->queryFactory->newDelete();
+
+        $delete
+            ->from($table)                   // FROM this table
+            ->where('user_id = :user_id')
+            ->bindValue('user_id', $user_id);
+
+        $sth = $this->pdo->prepare($delete->getStatement());
+
+        $sth->execute($delete->getBindValues());
+    }
+
     public function getLastId() {
         $this->pdo->lastInsertId();
     }

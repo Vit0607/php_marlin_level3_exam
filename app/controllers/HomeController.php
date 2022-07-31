@@ -40,7 +40,8 @@ class HomeController
             echo $this->templates->render('page_register');
         } elseif ($_POST['reg']) {
             try {
-                $this->auth->register($_POST['email'], $_POST['password'], $_POST['username']);
+                $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username']);
+                $_SESSION['id'] = $userId;
                 flash()->message('Регистрация успешна', 'success');
             } catch (\Delight\Auth\InvalidEmailException $e) {
                 flash()->message('Invalid email address', 'error');
@@ -55,6 +56,7 @@ class HomeController
             if (!empty($_SESSION['flash_messages']['error'])) {
                 header('Location: /register');
             } else {
+                $this->qb->insert(['user_id' => $_SESSION['id']], 'info_links');
                 header('Location: /login');
             }
         }
@@ -62,28 +64,32 @@ class HomeController
 
     public function login()
     {
-        if (!$_POST['login']) {
-            echo $this->templates->render('page_login');
-            unset($_SESSION['flash_messages']['error']);
-            unset($_SESSION['flash_messages']['success']);
-        } elseif (!empty($_POST['login'])) {
-            try {
-                $this->auth->login($_POST['email'], $_POST['password']);
-                header('Location: /users');
-            } catch (\Delight\Auth\InvalidEmailException $e) {
-                flash()->message('Wrong email address', 'error');
-            } catch (\Delight\Auth\InvalidPasswordException $e) {
-                flash()->message('Wrong password', 'error');
-            } catch (\Delight\Auth\EmailNotVerifiedException $e) {
-                flash()->message('Email not verified', 'error');
-            } catch (\Delight\Auth\TooManyRequestsException $e) {
-                flash()->message('Too many requests', 'error');
-            }
+        if ($this->auth->isLoggedIn()) {
+            header('Location: /users');
+        } else {
+            if (!$_POST['login']) {
+                echo $this->templates->render('page_login');
+                unset($_SESSION['flash_messages']['error']);
+                unset($_SESSION['flash_messages']['success']);
+            } elseif (!empty($_POST['login'])) {
+                try {
+                    $this->auth->login($_POST['email'], $_POST['password']);
+                    header('Location: /users');
+                } catch (\Delight\Auth\InvalidEmailException $e) {
+                    flash()->message('Wrong email address', 'error');
+                } catch (\Delight\Auth\InvalidPasswordException $e) {
+                    flash()->message('Wrong password', 'error');
+                } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+                    flash()->message('Email not verified', 'error');
+                } catch (\Delight\Auth\TooManyRequestsException $e) {
+                    flash()->message('Too many requests', 'error');
+                }
 
-            if (!empty($_SESSION['flash_messages']['error'])) {
-                header('Location: /login');
-            } else {
-                header('Location: /users');
+                if (!empty($_SESSION['flash_messages']['error'])) {
+                    header('Location: /login');
+                } else {
+                    header('Location: /users');
+                }
             }
         }
     }
@@ -100,7 +106,6 @@ class HomeController
         if ($this->auth->isLoggedIn()) {
             $role = $this->auth->getRoles();
             $users = $this->qb->getAllTablesInfo('users', 'info_links');
-//            unset($_SESSION['flash_messages']['success']);
             echo $this->templates->render('users', ['usersInView' => $users, 'role' => $role]);
         } else {
             header('Location: /login');
@@ -229,30 +234,27 @@ class HomeController
                     echo $this->templates->render('security', ['user' => $this->user]);
                 } elseif ($_POST['security']) {
                     $edit_email = $_POST['email'];
-                    $current_user_id = $_SESSION['id'];
+                    $current_user_id = $this->auth->getUserId();;
 
-                    $current_user = $this->qb->getOne('users', $current_user_id);
-
-//                    var_dump($current_user);die();
-
-                    $current_email = $current_user['email'];
+                    $current_email = $this->auth->getEmail();
 
                     $users = $this->qb->getAll('users');
 
                     $is_email_free = $this->is_email_free($users, $edit_email);
 
+                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-                    if($is_email_free == false &&  $edit_email == $current_email) {
-                        $this->qb->update(['email' => $edit_email, 'password' => $_POST['password']], $_SESSION['id'], 'users');
+                    if ($is_email_free == false && $edit_email == $current_email) {
+                        $this->qb->update(['email' => $edit_email, 'password' => $password], $_SESSION['id'], 'users');
                         flash()->message('Профиль успешно обновлен.', 'success');
                         header('Location: /page-profile');
                     }
-                    if($is_email_free == false &&  $edit_email != $current_email) {
+                    if ($is_email_free == false && $edit_email != $current_email) {
                         flash()->message('Email не свободен.', 'error');
                         header('Location: /security?id=' . $current_user_id);
                     }
-                    if($is_email_free == true &&  $edit_email != $current_email) {
-                        $this->qb->update(['email' => $edit_email, 'password' => $_POST['password']], $_SESSION['id'], 'users');
+                    if ($is_email_free == true && $edit_email != $current_email) {
+                        $this->qb->update(['email' => $edit_email, 'password' => $password], $_SESSION['id'], 'users');
                         flash()->message('Профиль успешно обновлен.', 'success');
                         header('Location: /page-profile');
                     }
@@ -270,12 +272,65 @@ class HomeController
                 flash()->message('Можно редактировать только свой профиль', 'warning');
                 header('Location: /users');
             } elseif (array_search('ADMIN', $this->auth->getRoles()) || $this->auth->getUserId() == $_GET['id']) {
-                if (!$_POST['status']) {
+                if (!$_POST['set_status']) {
+                    $_SESSION['id'] = $_GET['id'];
                     $edit_user = $this->qb->getOneByUserId('info_links', $_GET['id']);
                     $edit_user_status = $edit_user['online_status'];
                     echo $this->templates->render('status', ['edit_user_status' => $edit_user_status]);
-                } elseif ($_POST['status']) {
+                } elseif ($_POST['set_status']) {
+                    $this->qb->updateByUserId(['online_status' => $_POST['online_status']], $_SESSION['id'], 'info_links');
+                    flash()->message('Профиль успешно обновлен.', 'success');
+                    header('Location: /page-profile');
+                }
+            }
+        } else {
+            header('Location: /login');
+        }
+    }
 
+    public function avatar()
+    {
+        if ($this->auth->isLoggedIn()) {
+            if ($this->auth->getUserId() != $_GET['id'] && !array_search('ADMIN', $this->auth->getRoles())) {
+                flash()->message('Можно редактировать только свой профиль', 'warning');
+                header('Location: /users');
+            } elseif (array_search('ADMIN', $this->auth->getRoles()) || $this->auth->getUserId() == $_GET['id']) {
+                if (!$_POST['upload_avatar']) {
+                    $_SESSION['id'] = $_GET['id'];
+                    $edit_user = $this->qb->getOneByUserId('info_links', $_GET['id']);
+                    $edit_user_avatar = $edit_user['avatar'];
+                    echo $this->templates->render('avatar', ['edit_user_avatar' => $edit_user_avatar]);
+                } elseif ($_POST['upload_avatar']) {
+                    $uniqId = $this->qb->upload_avatar($_FILES['avatar']['name']);
+                    $this->qb->updateByUserId(['avatar' => $uniqId], $_SESSION['id'], 'info_links');
+                    flash()->message('Профиль успешно обновлен.', 'success');
+                    header('Location: /page-profile');
+                }
+            }
+        } else {
+            header('Location: /login');
+        }
+    }
+
+    public function delete()
+    {
+//       echo $this->auth->getUserId(); die();
+        if ($this->auth->isLoggedIn()) {
+            if ($this->auth->getUserId() != $_GET['id'] && !array_search('ADMIN', $this->auth->getRoles())) {
+                flash()->message('Можно редактировать только свой профиль', 'warning');
+                header('Location: /users');
+            } elseif (array_search('ADMIN', $this->auth->getRoles()) || $this->auth->getUserId() == $_GET['id']) {
+                $delete_user = $this->qb->getOneByUserId('info_links', $_GET['id']);
+                $img = $delete_user['avatar'];
+                unlink($_SERVER['DOCUMENT_ROOT'] . '/img/uploaded/' . $img);
+                $this->qb->delete('users', $_GET['id']);
+                $this->qb->deleteByUserId('info_links', $_GET['id']);
+
+                if ($_GET['id'] == $this->auth->getUserId()) {
+                    $this->auth->logOut();
+                    header('Location: /register');
+                } else {
+                    header('Location: /users');
                 }
             }
         } else {

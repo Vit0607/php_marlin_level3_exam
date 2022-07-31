@@ -25,7 +25,7 @@
         </h1>
 
     </div>
-    <form action="">
+    <form method="post">
         <div class="row">
             <div class="col-xl-6">
                 <div id="panel-1" class="panel">
@@ -39,7 +39,7 @@
                                     <!-- status -->
                                     <div class="form-group">
                                         <label class="form-label" for="example-select">Выберите статус</label>
-                                        <select class="form-control" id="example-select" name="status">
+                                        <select class="form-control" id="example-select" name="online_status">
                                             <?php
                                             $statuses = [
                                                 'online' => 'Онлайн',
@@ -58,7 +58,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
-                                    <button class="btn btn-warning" name="status" value="status">Set Status</button>
+                                    <button class="btn btn-warning" name="set_status" value="set_status">Set
+                                        Status</button>
                                 </div>
                             </div>
                         </div>

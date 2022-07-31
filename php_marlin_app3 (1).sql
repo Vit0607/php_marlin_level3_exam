@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Июл 27 2022 г., 14:14
+-- Время создания: Июл 31 2022 г., 16:22
 -- Версия сервера: 8.0.24
 -- Версия PHP: 7.4.21
 
@@ -28,24 +28,25 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `info_links` (
-  `user_id` int NOT NULL,
-  `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `job_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telegram` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `instagram` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `add_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `online_status` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `job_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telegram` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instagram` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Дамп данных таблицы `info_links`
 --
 
-INSERT INTO `info_links` (`user_id`, `avatar`, `job_title`, `phone`, `address`, `telegram`, `instagram`, `vk`) VALUES
-(1, '', 'Admin', '+7 930 8044381', '15 Charist St, Detroit, MI, 48212, USA', 'https://telegram.org/', 'https://instagram.com/', 'https://vk.com/id399462970'),
-(2, '', 'IT Director', '+7 930 8044382', 'London', 'https://telegram.org/', 'https://instagram.com/', 'https://vk.com/id399462970'),
-(3, '', 'Manager', '+7 (930) 804-43-85', 'Paris', 'https://telegram.org/', 'https://instagram.com/', 'https://vk.com/id399462970');
+INSERT INTO `info_links` (`add_id`, `user_id`, `online_status`, `avatar`, `job_title`, `phone`, `address`, `telegram`, `instagram`, `vk`) VALUES
+(1, 1, 'online', '62e66c0fe00a0.png', 'Admin', '+7 930 8044381', '15 Charist St, Detroit, MI, 48212, USA', 'https://telegram.org/', 'https://instagram.com/', 'https://vk.com/id399462970'),
+(2, 2, 'away', '62e66bd28a976.png', 'IT Director', '+7 930 8044382', 'London', 'https://telegram.org/', 'https://instagram.com/', 'https://vk.com/id399462970');
 
 -- --------------------------------------------------------
 
@@ -72,10 +73,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `username`, `status`, `verified`, `resettable`, `roles_mask`, `registered`, `last_login`, `force_logout`) VALUES
-(1, 'rahim@marlindev.ru', '$2y$10$05X6vSM3rZxEeVXcI35P1uESmXPNpWgeqTvu7ZoE.HiwynqCNIzDG', 'Rahim', 1, 1, 1, 1, 1657551647, 1658822392, 0),
-(2, 'rahim2@marlindev.ru', '$2y$10$epG.G.YYX.CiX4RqyaHleu/zEzAMEuvJaF083XJmUKNnhYxB9./oi', 'Rahim2', 2, 1, 1, 512, 1658316208, 1658752336, 0),
-(3, 'test@test2.ru', '$2y$10$vS.6xdDboIc1ewQiYGee3OT1HbdDeAmRaGRjBzQZri39DeAQ5hIXO', 'Dimon', 3, 1, 1, 8192, 1658316281, NULL, 0),
-(74, '555@dev.ru', '$2y$10$1AQgPvOETwwiq/3MlhZWq.Dzr9cEd1HK9fmqBiQO2PMO6gih0bS3S', 'Bob', 0, 1, 1, 0, 1658920360, NULL, 0);
+(1, 'rahim@marlindev.ru', '', 'Rahim', 1, 1, 1, 1, 1657551647, 1659184966, 0),
+(2, 'rahim3@marlindev.ru', '$2y$10$ACh3YLOwDZgu8pJuGedn8eCuDZ.tiyrT3K2xoiYONsIVSGttrypz6', 'Rahim10', 2, 1, 1, 1, 1658316208, 1659271013, 0),
+(150, '777@mail.ru', '$2y$10$BvkGT.enhImXW3.JpgdtrOHLT19aQTr.SdNJnHDGCO0.K5260O9g2', NULL, 0, 1, 1, 1, 1659272615, 1659272622, 0),
+(149, '123@tutu.ru', '$2y$10$/AffTvbSARp4iJo6o.75HePRdcUhEmz.Z1rLa3/DYOMjlzDW4zHeq', NULL, 1, 1, 1, 512, 1659271890, 1659271900, 0),
+(151, '999@dev.ru', '$2y$10$hqB9vRJpEznakvTs.jDJwOwIe5d/gjJ20rw.4evJWxYmfTyfg2.bC', NULL, 0, 1, 1, 0, 1659273243, 1659273249, 0),
+(152, '555@dev.ru', '$2y$10$Bvqsj7s.0cTbngE23Z15Qu6wzgw3Lg46V3j0nlke7whQn.UqXIRRa', NULL, 0, 1, 1, 0, 1659273336, NULL, 0),
+(153, '444@dev.ru', '$2y$10$JMjJWu.5jnMz.yp/z5knren/DykPMnLjKwlEcxuf7YQ/7ziy2NfHm', NULL, 0, 1, 1, 0, 1659273362, 1659273367, 0);
 
 -- --------------------------------------------------------
 
@@ -175,6 +179,12 @@ INSERT INTO `users_throttling` (`bucket`, `tokens`, `replenished_at`, `expires_a
 --
 
 --
+-- Индексы таблицы `info_links`
+--
+ALTER TABLE `info_links`
+  ADD PRIMARY KEY (`add_id`);
+
+--
 -- Индексы таблицы `users`
 --
 ALTER TABLE `users`
@@ -218,10 +228,16 @@ ALTER TABLE `users_throttling`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `info_links`
+--
+ALTER TABLE `info_links`
+  MODIFY `add_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+
+--
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 
 --
 -- AUTO_INCREMENT для таблицы `users_confirmations`

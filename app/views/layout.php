@@ -23,8 +23,8 @@ error_reporting(E_ALL);
     <!-- <link id="mytheme" rel="stylesheet" media="screen, print" href="#">-->
     <link id="myskin" type="text/css" rel="stylesheet" media="screen, print" href="/css/skins/skin-master.css">
     <!-- Place favicon.ico in the root directory -->
-    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
     <link rel="mask-icon" href="img/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <link rel="stylesheet" media="screen, print" href="/css/fa-brands.css">
     <?php if ($_SERVER['REQUEST_URI'] == '/login'): ?>
@@ -92,5 +92,6 @@ error_reporting(E_ALL);
     });
 
 </script>
+
 
 </body>

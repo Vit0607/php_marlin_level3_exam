@@ -81,6 +81,26 @@ class QueryBuilder
         return $result;
     }
 
+    public function getOneByUserId($table, $user_id)
+    {
+        $select = $this->queryFactory->newSelect();
+
+        $select->cols(['*'])
+            ->from($table)->where('user_id = :user_id')
+            ->bindValue('user_id', $user_id);
+
+// prepare the statement
+        $sth = $this->pdo->prepare($select->getStatement());
+
+// bind the values and execute
+        $sth->execute($select->getBindValues());
+
+// get the results back as an associative array
+        $result = $sth->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
     public function insert($data, $table)
     {
         $insert = $this->queryFactory->newInsert();
@@ -91,11 +111,11 @@ class QueryBuilder
 
         $sth = $this->pdo->prepare($insert->getStatement());
 
-        var_dump($_POST);
+//        var_dump($_POST);die();
 
-//        $sth->execute($insert->getBindValues());
+        $sth->execute($insert->getBindValues());
 
-        d($sth->execute($insert->getBindValues()));die();
+//        d($sth->execute($insert->getBindValues()));die();
     }
 
     public function update($data, $id, $table)
@@ -107,6 +127,21 @@ class QueryBuilder
             ->cols($data)
             ->where('id = :id')
             ->bindValue('id', $id);
+
+        $sth = $this->pdo->prepare($update->getStatement());
+
+        $sth->execute($update->getBindValues());
+    }
+
+    public function updateByUserId($data, $user_id, $table)
+    {
+        $update = $this->queryFactory->newUpdate();
+
+        $update
+            ->table($table)                  // update this table
+            ->cols($data)
+            ->where('user_id = :user_id')
+            ->bindValue('user_id', $user_id);
 
         $sth = $this->pdo->prepare($update->getStatement());
 
@@ -129,6 +164,25 @@ class QueryBuilder
 
     public function getLastId() {
         $this->pdo->lastInsertId();
+    }
+
+    //Получить уникальный id загружаемого файла:
+    public function get_uniqid($file) {
+        $pathinfo = pathinfo($file);
+        $ext = $pathinfo['extension'];
+        $file = uniqid() . '.' . $ext;
+        return $file;
+    }
+
+    public function upload_avatar($avatar) {
+        //    Получаем уникальное название для картинки:
+        $uniqid = $this->get_uniqid($avatar);
+
+        $to = $_SERVER['DOCUMENT_ROOT'] . '/img/uploaded/' . $uniqid;
+
+        move_uploaded_file($_FILES['avatar']['tmp_name'], $to);
+
+        return $uniqid;
     }
 
 

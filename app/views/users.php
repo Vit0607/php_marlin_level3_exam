@@ -26,9 +26,9 @@
 </nav>
 
 <main id="js-page-content" role="main" class="page-content mt-3">
-<!--    <div class="alert alert-success">-->
-<!--        Профиль успешно обновлен.-->
-<!--    </div>-->
+    <!--    <div class="alert alert-success">-->
+    <!--        Профиль успешно обновлен.-->
+    <!--    </div>-->
     <?php echo flash()->display(); ?>
     <div class="subheader">
         <h1 class="subheader-title">
@@ -62,18 +62,21 @@
                 <div id="c_1" class="card border shadow-0 mb-g shadow-sm-hover" data-filter-tags="oliver kopyov">
                     <div class="card-body border-faded border-top-0 border-left-0 border-right-0 rounded-top">
                         <div class="d-flex flex-row align-items-center">
-                            <?php if ($user['status'] == '1'): ?>
+                            <?php if ($user['online_status'] == 'online'): ?>
                             <span class="status status-success mr-3">
-    <?php endif; ?>
-                                <?php if ($user['status'] == '2'): ?>
-        <span class="status status-warning mr-3">
-    <?php endif; ?>
-            <?php if ($user['status'] == '3'): ?>
-        <span class="status status-danger mr-3">
-    <?php endif; ?>
-<span class="rounded-circle profile-image d-block "
-      style="background-image:url('img/demo/avatars/avatar-b.png'); background-size: cover;"></span>
-</span>
+                            <?php endif; ?>
+                                <?php if ($user['online_status'] == 'away'): ?>
+                                <span class="status status-warning mr-3">
+                            <?php endif; ?>
+                                    <?php if ($user['online_status'] == 'busy'): ?>
+                                <span class="status status-danger mr-3">
+                            <?php endif; ?>
+                                    <span class="rounded-circle profile-image d-block "
+                                          style="background-image:url('img/uploaded/<?php echo !empty($user['avatar']) ? $user['avatar']
+                                              : 'no_photo.webp'
+                                          ?>'); background-size:
+                                                  cover;"></span>
+                                    </span>
                             <div class="info-card-text flex-1">
                                 <a href="javascript:void(0);" class="fs-xl text-truncate text-truncate-lg text-info"
                                    data-toggle="dropdown" aria-expanded="false">
@@ -91,20 +94,20 @@
                                     <?php endif; ?>
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/edit.php?id=<?php echo $user['id'] ?>">
+                                    <a class="dropdown-item" href="/edit?id=<?php echo $user['id'] ?>">
                                         <i class="fa fa-edit"></i>
                                         Редактировать</a>
-                                    <a class="dropdown-item" href="/security.php?id=<?php echo $user['id'] ?>">
+                                    <a class="dropdown-item" href="/security?id=<?php echo $user['id'] ?>">
                                         <i class="fa fa-lock"></i>
                                         Безопасность</a>
-                                    <a class="dropdown-item" href="/status.php?id=<?php echo $user['id'] ?>">
+                                    <a class="dropdown-item" href="/status?id=<?php echo $user['id'] ?>">
                                         <i class="fa fa-sun"></i>
                                         Установить статус</a>
-                                    <a class="dropdown-item" href="/media.php?id=<?php echo $user['id'] ?>">
+                                    <a class="dropdown-item" href="/media?id=<?php echo $user['id'] ?>">
                                         <i class="fa fa-camera"></i>
                                         Загрузить аватар
                                     </a>
-                                    <a class="dropdown-item" href="/delete.php?id=<?php echo $user['id'] ?>"
+                                    <a class="dropdown-item" href="/delete?id=<?php echo $user['id'] ?>"
                                        onclick="return confirm('are you sure?');">
                                         <i class="fa fa-window-close"></i>
                                         Удалить
@@ -121,7 +124,7 @@
                     </div>
                     <div class="card-body p-0 collapse show">
                         <div class="p-3">
-                            <?php $tel =  '+7' . preg_replace('~[^0-9]+~', '', mb_substr($user['phone'], 2));  ?>
+                            <?php $tel = '+7' . preg_replace('~[^0-9]+~', '', mb_substr($user['phone'], 2)); ?>
 
                             <a href="tel:<?php echo $tel ?>" class="mt-1 d-block fs-sm fw-400 text-dark">
                                 <i class="fas fa-mobile-alt text-muted mr-2"></i> <?php echo $user['phone'] ?></a>

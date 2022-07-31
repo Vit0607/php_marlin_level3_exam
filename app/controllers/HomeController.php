@@ -26,8 +26,6 @@ class HomeController
 
     public function index()
     {
-//        d($this->auth);die();
-
         $users = $this->qb->getAll('users');
 
         echo $this->templates->render('homepage', ['usersInView' => $users]);
@@ -314,7 +312,6 @@ class HomeController
 
     public function delete()
     {
-//       echo $this->auth->getUserId(); die();
         if ($this->auth->isLoggedIn()) {
             if ($this->auth->getUserId() != $_GET['id'] && !array_search('ADMIN', $this->auth->getRoles())) {
                 flash()->message('Можно редактировать только свой профиль', 'warning');

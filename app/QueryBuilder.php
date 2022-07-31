@@ -69,13 +69,10 @@ class QueryBuilder
             ->from($table)->where('id = :id')
             ->bindValue('id', $id);
 
-// prepare the statement
         $sth = $this->pdo->prepare($select->getStatement());
 
-// bind the values and execute
         $sth->execute($select->getBindValues());
 
-// get the results back as an associative array
         $result = $sth->fetch(PDO::FETCH_ASSOC);
 
         return $result;
@@ -89,13 +86,10 @@ class QueryBuilder
             ->from($table)->where('user_id = :user_id')
             ->bindValue('user_id', $user_id);
 
-// prepare the statement
         $sth = $this->pdo->prepare($select->getStatement());
 
-// bind the values and execute
         $sth->execute($select->getBindValues());
 
-// get the results back as an associative array
         $result = $sth->fetch(PDO::FETCH_ASSOC);
 
         return $result;
@@ -174,10 +168,6 @@ class QueryBuilder
         $sth = $this->pdo->prepare($delete->getStatement());
 
         $sth->execute($delete->getBindValues());
-    }
-
-    public function getLastId() {
-        $this->pdo->lastInsertId();
     }
 
     //Получить уникальный id загружаемого файла:
